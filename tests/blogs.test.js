@@ -89,6 +89,20 @@ test('adding blogs work', async () => {
     expect(response.body).toHaveLength(3)
 })
 
+test('likes have default value of 0', async() => {
+    let blogObject = {
+        "title": "Blog2",
+        "author": "BlogMan",
+        "url": "http://blog.blog2.man/"
+    }
+
+    await api.post('/api/blogs', blogObject)
+    const response = await api.get('/api/blogs')
+
+    expect(response.body[2].likes).toBeDefined()
+    expect(response.body[2].likes).toBe(0)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
