@@ -70,7 +70,6 @@ test('correct amount of blogs returned', async () => {
 
 test('blogs defined by id', async () => {
     const response = await api.get('/api/blogs')
-    console.log(response)
 
     expect(response.body[0].id).toBeDefined()
 })
@@ -83,7 +82,10 @@ test('adding blogs work', async () => {
     "likes": 200
     }
 
-    await api.post('/api/blogs', blogObject)
+    await api
+        .post('/api/blogs')
+        .send(blogObject)
+        .expect(201)
     const response = await api.get('/api/blogs')
 
     expect(response.body).toHaveLength(3)
@@ -96,11 +98,25 @@ test('likes have default value of 0', async() => {
         "url": "http://blog.blog2.man/"
     }
 
-    await api.post('/api/blogs', blogObject)
+    await api
+        .post('/api/blogs')
+        .send(blogObject)
     const response = await api.get('/api/blogs')
+    console.log(response.body)
 
-    expect(response.body[2].likes).toBeDefined()
     expect(response.body[2].likes).toBe(0)
+})
+
+test('status code 400 with invalid input', async() => {
+    let blogObject = {
+        "author": "Kaarle"
+    }
+
+    const result = await api
+        .post('/api/blogs')
+        .send(blogObject)
+        .expect(400)
+    expect(result.status).toBe(400)
 })
 
 afterAll(() => {
