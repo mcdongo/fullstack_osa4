@@ -75,6 +75,20 @@ test('blogs defined by id', async () => {
     expect(response.body[0].id).toBeDefined()
 })
 
+test('adding blogs work', async () => {
+    let blogObject = {
+    "title": "Blog2",
+    "author": "BlogMan",
+    "url": "http://blog.blog2.man/",
+    "likes": 200
+    }
+
+    await api.post('/api/blogs', blogObject)
+    const response = await api.get('/api/blogs')
+
+    expect(response.body).toHaveLength(3)
+})
+
 afterAll(() => {
   mongoose.connection.close()
 })
