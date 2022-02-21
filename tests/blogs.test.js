@@ -102,7 +102,6 @@ test('likes have default value of 0', async() => {
         .post('/api/blogs')
         .send(blogObject)
     const response = await api.get('/api/blogs')
-    console.log(response.body)
 
     expect(response.body[2].likes).toBe(0)
 })
@@ -117,6 +116,30 @@ test('status code 400 with invalid input', async() => {
         .send(blogObject)
         .expect(400)
     expect(result.status).toBe(400)
+})
+
+test('remove being succesfull', async() => {
+    let id = "5a422aa71b54a676234d17f8"
+
+    const result = await api.delete(`/api/blogs/${id}`)
+    expect(result.status).toBe(204)
+})
+
+test('updating entries work', async() => {
+    let id = "5a422aa71b54a676234d17f8"
+    const blogObject = {
+        title: "React patterns",
+        author: "Michael Chan",
+        url: "https://reactpatterns.com/",
+        likes: 10
+    }
+
+    await api
+        .put(`/api/blogs/${id}`)
+        .send(blogObject)
+
+    const result = await api.get('/api/blogs')
+    expect(result.body[0].likes).toBe(10)
 })
 
 afterAll(() => {
